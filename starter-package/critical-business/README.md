@@ -1,6 +1,8 @@
 # Terraform script for Starter Package on Alibaba Cloud - Critical business scenario
 This terraform script will pull up ECS, PolarDB MySQL, Redis and MongoDB for critical business scenario such as gaming service.
 
+![image.png](https://github.com/alibabacloud-howto/terraform-templates/raw/main/starter-package/critical-business/archi-critical-business.png)
+
 The cloud resources included:
 - ECS -- 4C8G 10M, Enhanced, ecs.c6e.xlarge, 50GB ESSD, CentOS 8.2 x64
 - Redis -- 8G, 5.0, Tair, Enhanced Performance, Cluster, 4 Shards, Master-Replica, 8G performance-enhanced (4 shards), redis.amber.logic.sharding.2g.4db.0rodb.12proxy.multithread
