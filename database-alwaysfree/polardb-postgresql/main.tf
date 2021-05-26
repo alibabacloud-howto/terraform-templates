@@ -10,7 +10,7 @@ provider "alicloud" {
   # China(Hong Kong): cn-hongkong
   # 
   # Please select one of these regions.
-  region = "cn-hongkong"
+  region = "ap-southeast-1"
 }
 
 variable "polardb_postgresql_name" {
