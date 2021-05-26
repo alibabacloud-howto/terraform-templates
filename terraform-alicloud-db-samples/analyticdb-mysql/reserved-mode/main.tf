@@ -34,6 +34,7 @@ resource "alicloud_adb_cluster" "default" {
   db_node_class       = "C8"
   db_node_count       = 2
   db_node_storage     = 200
+  mode                = "reserver"
   pay_type            = "PostPaid"
   description         = var.analyticdb_mysql_name
   vswitch_id          = alicloud_vswitch.default.id
