@@ -12,6 +12,6 @@ PolarDB is compute and storage decoupled. These Terraform scripts only provision
   - China(Hong Kong): cn-hongkong
 
 The terraform scripts are:
-- PolarDB MySQL: 
-- PolarDB PostgreSQL:
-- PolarDB Oracle:
+- PolarDB MySQL: [https://github.com/alibabacloud-howto/terraform-templates/blob/master/database-alwaysfree/polardb-mysql/main.tf](https://github.com/alibabacloud-howto/terraform-templates/blob/master/database-alwaysfree/polardb-mysql/main.tf)
+- PolarDB PostgreSQL: [https://github.com/alibabacloud-howto/terraform-templates/blob/master/database-alwaysfree/polardb-mysql/main.tf](https://github.com/alibabacloud-howto/terraform-templates/blob/master/database-alwaysfree/polardb-mysql/main.tf)
+- PolarDB Oracle: [https://github.com/alibabacloud-howto/terraform-templates/blob/master/database-alwaysfree/polardb-mysql/main.tf](https://github.com/alibabacloud-howto/terraform-templates/blob/master/database-alwaysfree/polardb-mysql/main.tf)
