@@ -41,7 +41,7 @@ resource "alicloud_polardb_cluster" "cluster" {
   db_type       = "Oracle"
   db_version    = "11"
   db_node_class = "polar.o.x4.medium" # 2C8G dedicated
-  pay_type      = "PostPaid"          # Need to be PrePaid
+  pay_type      = "PrePaid"          # Need to be PrePaid
   vswitch_id    = alicloud_vswitch.default.id
   description   = var.polardb_oracle_name
 }

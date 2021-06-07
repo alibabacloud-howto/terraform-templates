@@ -41,7 +41,7 @@ resource "alicloud_polardb_cluster" "cluster" {
   db_type       = "MySQL"
   db_version    = "8.0"                   # 5.6, 5.7, or 8.0
   db_node_class = "polar.mysql.g4.medium" # 2C8G general purpose
-  pay_type      = "PostPaid"              # Need to be PrePaid
+  pay_type      = "PrePaid"              # Need to be PrePaid
   vswitch_id    = alicloud_vswitch.default.id
   description   = var.polardb_mysql_name
 }

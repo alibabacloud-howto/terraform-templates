@@ -14,6 +14,8 @@ Click [Always Free PolarDB Instance Application Form](https://page-intl.aliyun.c
 
 ![image desc](https://github.com/alibabacloud-howto/terraform-templates/raw/master/hackathon-database-package/images/polardb_always_free.png)
 
+Or you can use the Terraform scripts to provision the PolarDB Always Free instances: [PolarDB Always Free Terraform](https://github.com/alibabacloud-howto/terraform-templates/tree/master/database-alwaysfree)
+
 - [ClickHouse 30 Days Free](https://www.alibabacloud.com/product/clickhouse/free-trial?spm=a3c0i.247269.2463051000.33.551469597c8FX9)
 
 ![image desc](https://github.com/alibabacloud-howto/terraform-templates/raw/master/hackathon-database-package/images/ck_free.png)
