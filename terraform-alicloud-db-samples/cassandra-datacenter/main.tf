@@ -17,22 +17,22 @@ data "alicloud_zones" "default" {
 }
 
 resource "alicloud_vpc" "default" {
-  name       = "vpc-test"
+  vpc_name   = "vpc-test"
   cidr_block = "172.16.0.0/16"
 }
 
 resource "alicloud_vswitch" "dc_1" {
-  vpc_id            = alicloud_vpc.default.id
-  cidr_block        = "172.16.0.0/24"
-  availability_zone = data.alicloud_zones.default.zones[0].id
-  name              = "vsw-dc-1"
+  vpc_id       = alicloud_vpc.default.id
+  cidr_block   = "172.16.0.0/24"
+  zone_id      = data.alicloud_zones.default.zones[0].id
+  vswitch_name = "vsw-dc-1"
 }
 
 resource "alicloud_vswitch" "dc_2" {
-  vpc_id            = alicloud_vpc.default.id
-  cidr_block        = "172.16.1.0/24"
-  availability_zone = data.alicloud_zones.default.zones[1].id
-  name              = "vsw-dc-2"
+  vpc_id       = alicloud_vpc.default.id
+  cidr_block   = "172.16.1.0/24"
+  zone_id      = data.alicloud_zones.default.zones[1].id
+  vswitch_name = "vsw-dc-2"
 }
 
 resource "alicloud_cassandra_cluster" "default" {
