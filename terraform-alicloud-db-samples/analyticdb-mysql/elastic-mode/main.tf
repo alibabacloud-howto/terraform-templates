@@ -1,7 +1,7 @@
 provider "alicloud" {
   #   access_key = "${var.access_key}"
   #   secret_key = "${var.secret_key}"
-  region = "ap-southeast-1"
+  region = "cn-hongkong"
 }
 
 variable "analyticdb_mysql_name" {
@@ -31,13 +31,13 @@ resource "alicloud_vswitch" "default" {
 resource "alicloud_adb_db_cluster" "this" {
   db_cluster_category = "MixedStorage"
   compute_resource    = "32Core128GB"
-  elastic_io_resource = "2"
-  mode                = "flexible"
-  db_cluster_version  = "3.0"
-  payment_type        = "PayAsYouGo"
-  vswitch_id          = alicloud_vswitch.default.id
-  description         = "AnalyticDB in elastic mode."
-  maintain_time       = "23:00Z-00:00Z"
+  # elastic_io_resource = "2"
+  mode               = "flexible"
+  db_cluster_version = "3.0"
+  payment_type       = "PayAsYouGo"
+  vswitch_id         = alicloud_vswitch.default.id
+  description        = "AnalyticDB in elastic mode."
+  maintain_time      = "23:00Z-00:00Z"
   tags = {
     Created = "TF-update"
     For     = "acceptance-test-update"
