@@ -1,7 +1,7 @@
 provider "alicloud" {
   #   access_key = "${var.access_key}"
   #   secret_key = "${var.secret_key}"
-  region = "ap-southeast-1"
+  region = "cn-hongkong"
 }
 
 variable "redis_name" {
@@ -44,6 +44,17 @@ resource "alicloud_kvstore_instance" "example" {
   }
   resource_group_id = "rg-123456"
   zone_id           = data.alicloud_zones.default.zones[0].id
-  instance_class    = "redis.logic.sharding.2g.8db.0rodb.8proxy.default"
+
+  ##### Instance class: https://www.alibabacloud.com/help/doc-detail/26350.htm
+
+  ##### Standard master-replica instances
+  # instance_class    = "redis.amber.master.small.multithread"
+
+  ##### Cluster instances
+  instance_class = "redis.amber.logic.sharding.1g.2db.0rodb.6proxy.multithread"
+
+  ##### Read/write splitting instances SUPPORTED
+  # instance_class = "redis.amber.logic.splitrw.small.1db.1rodb.6proxy.multithread"
+
   # ssl_enable        = "Enable"
 }
