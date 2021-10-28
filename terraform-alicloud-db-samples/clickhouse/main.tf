@@ -8,12 +8,7 @@ variable "analyticdb_mysql_name" {
   default = "analyticdb_mysql"
 }
 
-variable "creation" {
-  default = "ADB"
-}
-
 data "alicloud_zones" "default" {
-  available_resource_creation = var.creation
 }
 
 resource "alicloud_vpc" "default" {
