@@ -35,6 +35,11 @@ resource "alicloud_db_instance" "instance" {
   instance_storage = "10"
   vswitch_id       = alicloud_vswitch.default.id
   instance_name    = var.rds_mysql_name
+  parameters {
+    name  = "tls_version"
+    value = "TLSv1.2"
+  }
+  force_restart = true
 }
 
 resource "alicloud_db_database" "default" {
