@@ -73,4 +73,4 @@ Please refer to: https://www.alibabacloud.com/help/doc-detail/40654.htm
 
 ---
 ## Example Solutions with Terraform on Alibaba Cloud
-Please refer to: https://www.youtube.com/playlist?list=PL54EFTJJZrwhlXruht3cQA18ISUKo6GAD
+Solution projects: https://github.com/alibabacloud-howto/database
