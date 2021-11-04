@@ -15,3 +15,16 @@ Please visit: [https://www.youtube.com/watch?v=fgSON_ILnLA](https://www.youtube.
 
 ## How to install Terraform on Mac OS?
 Please visit: [https://www.youtube.com/watch?v=q4WNdNtsuyE](https://www.youtube.com/watch?v=q4WNdNtsuyE)
+
+Since you need Access Key and Secret Key in Terraform to interact with Alibaba Cloud services, such as in the Terraform script ```main.tf```, you may need to 
+fill in with Access Key and Secret Key of your Alibaba Cloud account. 
+
+```
+provider "alicloud" {
+  #   access_key = "${var.access_key}"
+  #   secret_key = "${var.secret_key}"
+  region = "ap-southeast-1"
+}
+```
+
+If you want to know how to get your Alibaba Cloud account Access Key and Secret Key, please refer to: https://www.youtube.com/watch?v=O0X02sPwHL8.
