@@ -36,15 +36,19 @@ If you want to know how to get your Alibaba Cloud account Access Key and Secret 
 Please refer to: https://www.alibabacloud.com/help/doc-detail/40654.htm
 
 ---
+## How to get the AZ (Availability Zone) ID of Alibaba Cloud Database services?
+Using Terraform to obtain available zones for Alibaba Cloud Database products on global regions: https://github.com/alibabacloud-howto/terraform-database-available-zones
+
+---
 ## Reference of Alibaba Cloud Database Instance Specification
 
 | Database Service | Reference URL |
 | :------: | :---------: |
 | RDS primary instance | https://www.alibabacloud.com/help/doc-detail/26312.htm |
 | RDS read only instance | https://www.alibabacloud.com/help/doc-detail/145759.htm |
-| PolarDB MySQL | https://www.alibabacloud.com/help/doc-detail/102542.htm |
-| PolarDB PostgreSQL | https://www.alibabacloud.com/help/doc-detail/173282.htm |
-| PolarDB O (Oracle Compatible Edition) | https://www.alibabacloud.com/help/doc-detail/173281.htm |
+| PolarDB for MySQL | https://www.alibabacloud.com/help/doc-detail/102542.htm |
+| PolarDB for PostgreSQL | https://www.alibabacloud.com/help/doc-detail/173282.htm |
+| PolarDB for Oracle | https://www.alibabacloud.com/help/doc-detail/173281.htm |
 | Redis instance | https://www.alibabacloud.com/help/doc-detail/26350.htm |
 | MongoDB instance | https://www.alibabacloud.com/help/doc-detail/57141.htm |
 | HBase instance | https://www.alibabacloud.com/help/doc-detail/53532.htm |
@@ -59,10 +63,10 @@ Please refer to: https://www.alibabacloud.com/help/doc-detail/40654.htm
 | [RDS MySQL (Primary Instance + Read Only Instance)](https://www.alibabacloud.com/product/apsaradb-for-rds-mysql) | https://github.com/alibabacloud-howto/terraform-templates/blob/master/terraform-alicloud-db-samples/rds-mysql-ro-clouddisk/main.tf |
 | [RDS PostgreSQL](https://www.alibabacloud.com/product/apsaradb-for-rds-postgresql) | https://github.com/alibabacloud-howto/terraform-templates/blob/master/terraform-alicloud-db-samples/rds-postgresql/main.tf |
 | [RDS SQL Server](https://www.alibabacloud.com/product/apsaradb-for-rds-sql-server) | https://github.com/alibabacloud-howto/terraform-templates/blob/master/terraform-alicloud-db-samples/rds-sqlserver/main.tf |
-| [PolarDB MySQL](https://www.alibabacloud.com/product/polardb) | https://github.com/alibabacloud-howto/terraform-templates/blob/master/terraform-alicloud-db-samples/polardb-mysql/main.tf |
-| [PolarDB PostgreSQL](https://www.alibabacloud.com/product/polardb) | https://github.com/alibabacloud-howto/terraform-templates/blob/master/terraform-alicloud-db-samples/polardb-postgresql/main.tf |
-| [PolarDB O(Oracle Compatible Edition)](https://www.alibabacloud.com/product/polardb) | https://github.com/alibabacloud-howto/terraform-templates/blob/master/terraform-alicloud-db-samples/polardb-oracle/main.tf |
-| [AnalyticDB MySQL (Elastic Mode)](https://www.alibabacloud.com/product/analyticdb-for-mysql) | https://github.com/alibabacloud-howto/terraform-templates/blob/master/terraform-alicloud-db-samples/analyticdb-mysql/elastic-mode/main.tf |
+| [PolarDB for MySQL](https://www.alibabacloud.com/product/polardb) | https://github.com/alibabacloud-howto/terraform-templates/blob/master/terraform-alicloud-db-samples/polardb-mysql/main.tf |
+| [PolarDB for PostgreSQL](https://www.alibabacloud.com/product/polardb) | https://github.com/alibabacloud-howto/terraform-templates/blob/master/terraform-alicloud-db-samples/polardb-postgresql/main.tf |
+| [PolarDB for Oracle](https://www.alibabacloud.com/product/polardb) | https://github.com/alibabacloud-howto/terraform-templates/blob/master/terraform-alicloud-db-samples/polardb-oracle/main.tf |
+| [AnalyticDB for MySQL (Elastic Mode)](https://www.alibabacloud.com/product/analyticdb-for-mysql) | https://github.com/alibabacloud-howto/terraform-templates/blob/master/terraform-alicloud-db-samples/analyticdb-mysql/elastic-mode/main.tf |
 | [ClickHouse](https://www.alibabacloud.com/product/clickhouse) | https://github.com/alibabacloud-howto/terraform-templates/blob/master/terraform-alicloud-db-samples/clickhouse/main.tf |
 | [Redis](https://www.alibabacloud.com/product/apsaradb-for-redis) | https://github.com/alibabacloud-howto/terraform-templates/blob/master/terraform-alicloud-db-samples/redis/main.tf |
 | [MongoDB (Replica Set)](https://www.alibabacloud.com/product/apsaradb-for-mongodb) | https://github.com/alibabacloud-howto/terraform-templates/blob/master/terraform-alicloud-db-samples/mongodb/main.tf |
