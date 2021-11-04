@@ -49,3 +49,19 @@ Please refer to: https://www.alibabacloud.com/help/doc-detail/40654.htm
 | HBase instance | https://www.alibabacloud.com/help/doc-detail/53532.htm |
 | Redis instance | https://www.alibabacloud.com/help/doc-detail/26350.htm |
 
+---
+Terraform Examples for Alibaba Cloud Database
+
+| Database Service | Reference URL |
+| :------: | :---------: |
+| AnalyticDB MySQL (Elastic Mode) | https://github.com/alibabacloud-howto/terraform-templates/blob/master/terraform-alicloud-db-samples/analyticdb-mysql/elastic-mode/main.tf |
+|  |  |
+|  |  |
+|  |  |
+|  |  |
+|  |  |
+|  |  |
+|  |  |
+|  |  |
+|  |  |
+|  |  |
