@@ -70,3 +70,7 @@ Please refer to: https://www.alibabacloud.com/help/doc-detail/40654.htm
 | [HBase](https://www.alibabacloud.com/product/hbase) | https://github.com/alibabacloud-howto/terraform-templates/blob/master/terraform-alicloud-db-samples/hbase/main.tf |
 | [InfluxDB](https://www.alibabacloud.com/product/hitsdb_influxdb) | https://github.com/alibabacloud-howto/terraform-templates/blob/master/terraform-alicloud-db-samples/influxdb/main.tf |
 | [TSDB](https://www.alibabacloud.com/product/hitsdb) | https://github.com/alibabacloud-howto/terraform-templates/blob/master/terraform-alicloud-db-samples/tsdb/main.tf |
+
+---
+## Example Solutions with Terraform on Alibaba Cloud
+Please refer to: https://www.youtube.com/playlist?list=PL54EFTJJZrwhlXruht3cQA18ISUKo6GAD
