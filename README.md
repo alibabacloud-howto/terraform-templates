@@ -48,7 +48,7 @@ Please refer to: https://www.alibabacloud.com/help/doc-detail/40654.htm
 | Redis instance | https://www.alibabacloud.com/help/doc-detail/26350.htm |
 | MongoDB instance | https://www.alibabacloud.com/help/doc-detail/57141.htm |
 | HBase instance | https://www.alibabacloud.com/help/doc-detail/53532.htm |
-| TSDB/InfluxDB instance | https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/tsdb_instance#influxdata.n1.mxlarge |
+| TSDB/InfluxDB instance | [Reference on Terraform document](https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/tsdb_instance#influxdata.n1.mxlarge) |
 
 ---
 ## Terraform Examples for Alibaba Cloud Database
