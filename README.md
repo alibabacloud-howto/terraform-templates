@@ -58,7 +58,7 @@ Using Terraform to obtain available zones for Alibaba Cloud Database products on
 ## Terraform Examples for Alibaba Cloud Database
 
 |  | Database Service | Reference URL |
-| :------ | :--------- |
+| :------: | :------ | :--------- |
 | ![image.png](https://github.com/alibabacloud-howto/database/raw/main/apsaradb-logos/mysql-32.png) | [RDS MySQL](https://www.alibabacloud.com/product/apsaradb-for-rds-mysql) | https://github.com/alibabacloud-howto/terraform-templates/blob/master/terraform-alicloud-db-samples/rds-mysql-clouddisk/main.tf |
 | ![image.png](https://github.com/alibabacloud-howto/database/raw/main/apsaradb-logos/mysql-32.png) | [RDS MySQL (Primary Instance + Read Only Instance)](https://www.alibabacloud.com/product/apsaradb-for-rds-mysql) | https://github.com/alibabacloud-howto/terraform-templates/blob/master/terraform-alicloud-db-samples/rds-mysql-ro-clouddisk/main.tf |
 | ![image.png](https://github.com/alibabacloud-howto/database/raw/main/apsaradb-logos/postgresql-32.png) | [RDS PostgreSQL](https://www.alibabacloud.com/product/apsaradb-for-rds-postgresql) | https://github.com/alibabacloud-howto/terraform-templates/blob/master/terraform-alicloud-db-samples/rds-postgresql/main.tf |
