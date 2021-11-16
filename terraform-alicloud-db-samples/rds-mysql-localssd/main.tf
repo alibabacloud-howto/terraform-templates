@@ -1,7 +1,7 @@
 provider "alicloud" {
   #   access_key = "${var.access_key}"
   #   secret_key = "${var.secret_key}"
-  region = "cn-hongkong"
+  region = "ap-northeast-1"
 }
 
 variable "rds_mysql_name" {
@@ -35,10 +35,10 @@ resource "alicloud_db_instance" "instance" {
   instance_storage = "10"
   vswitch_id       = alicloud_vswitch.default.id
   instance_name    = var.rds_mysql_name
-  parameters {
-    name  = "tls_version"
-    value = "TLSv1.2"
-  }
+  # parameters {
+  #   name  = "tls_version"
+  #   value = "TLSv1.2"
+  # }
   force_restart = true
 }
 

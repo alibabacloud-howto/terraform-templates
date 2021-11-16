@@ -4,10 +4,6 @@ provider "alicloud" {
   region = "cn-hongkong"
 }
 
-variable "analyticdb_mysql_name" {
-  default = "analyticdb_mysql"
-}
-
 data "alicloud_zones" "default" {
 }
 
