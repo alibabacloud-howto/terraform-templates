@@ -44,8 +44,12 @@ Using Terraform to obtain available zones for Alibaba Cloud Database products on
 
 | Database Service | Reference URL |
 | :------: | :---------: |
-| RDS primary instance | https://www.alibabacloud.com/help/doc-detail/26312.htm |
-| RDS read only instance | https://www.alibabacloud.com/help/doc-detail/145759.htm |
+| RDS for MySQL primary instance | https://www.alibabacloud.com/help/doc-detail/276975.htm |
+| RDS for MySQL read-only instance | https://www.alibabacloud.com/help/doc-detail/276980.htm |
+| RDS for PostgreSQL primary instance | https://www.alibabacloud.com/help/doc-detail/276990.htm |
+| RDS for PostgreSQL read-only instance | https://www.alibabacloud.com/help/doc-detail/276992.htm |
+| RDS for SQL Server primary instance | https://www.alibabacloud.com/help/doc-detail/276987.htm |
+| RDS for SQL Server read-only instance | https://www.alibabacloud.com/help/doc-detail/276988.htm |
 | PolarDB for MySQL | https://www.alibabacloud.com/help/doc-detail/102542.htm |
 | PolarDB for PostgreSQL | https://www.alibabacloud.com/help/doc-detail/173282.htm |
 | PolarDB for Oracle | https://www.alibabacloud.com/help/doc-detail/173281.htm |

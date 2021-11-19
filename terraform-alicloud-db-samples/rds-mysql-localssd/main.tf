@@ -1,7 +1,7 @@
 provider "alicloud" {
   #   access_key = "${var.access_key}"
   #   secret_key = "${var.secret_key}"
-  region = "ap-northeast-1"
+  region = "ap-northeast-3"
 }
 
 variable "rds_mysql_name" {
@@ -30,7 +30,7 @@ resource "alicloud_vswitch" "default" {
 
 resource "alicloud_db_instance" "instance" {
   engine           = "MySQL"
-  engine_version   = "5.7"
+  engine_version   = "8.0"
   instance_type    = "rds.mysql.s1.small"
   instance_storage = "10"
   vswitch_id       = alicloud_vswitch.default.id

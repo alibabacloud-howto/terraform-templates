@@ -44,7 +44,14 @@ resource "alicloud_db_database" "default" {
   name        = "test_database"
 }
 
-resource "alicloud_db_account" "account" {
+resource "alicloud_rds_account" "super" {
+  db_instance_id   = alicloud_db_instance.instance.id
+  account_type     = "Super"
+  account_name     = "super_admin"
+  account_password = "N1cetest"
+}
+
+resource "alicloud_rds_account" "account" {
   db_instance_id   = alicloud_db_instance.instance.id
   account_name     = "test_mysql"
   account_password = "N1cetest"
@@ -52,7 +59,7 @@ resource "alicloud_db_account" "account" {
 
 resource "alicloud_db_account_privilege" "privilege" {
   instance_id  = alicloud_db_instance.instance.id
-  account_name = alicloud_db_account.account.name
+  account_name = alicloud_rds_account.account.name
   privilege    = "ReadWrite"
   db_names     = alicloud_db_database.default.*.name
 }
