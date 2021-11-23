@@ -1,7 +1,7 @@
 provider "alicloud" {
   #   access_key = "${var.access_key}"
   #   secret_key = "${var.secret_key}"
-  region = "ap-northeast-3"
+  region = "cn-hongkong"
 }
 
 variable "rds_mysql_name" {
@@ -35,11 +35,7 @@ resource "alicloud_db_instance" "instance" {
   instance_storage = "10"
   vswitch_id       = alicloud_vswitch.default.id
   instance_name    = var.rds_mysql_name
-  # parameters {
-  #   name  = "tls_version"
-  #   value = "TLSv1.2"
-  # }
-  # force_restart = true
+  security_ips     = ["0.0.0.0/0"]
 }
 
 resource "alicloud_db_database" "default" {
@@ -47,15 +43,33 @@ resource "alicloud_db_database" "default" {
   name        = "test_database"
 }
 
-resource "alicloud_db_account" "account" {
+resource "alicloud_rds_account" "super_account" {
   db_instance_id   = alicloud_db_instance.instance.id
-  account_name     = "test_mysql"
+  account_name     = "super_test_mysql"
   account_password = "N1cetest"
+  account_type     = "Super"
 }
 
-resource "alicloud_db_account_privilege" "privilege" {
-  instance_id  = alicloud_db_instance.instance.id
-  account_name = alicloud_db_account.account.name
-  privilege    = "ReadWrite"
-  db_names     = alicloud_db_database.default.*.name
+resource "alicloud_rds_account" "normal_account_1" {
+  db_instance_id   = alicloud_db_instance.instance.id
+  account_name     = "test_mysql_1"
+  account_password = "password1"
+  account_type     = "Normal"
+}
+
+resource "alicloud_rds_account" "normal_account_2" {
+  db_instance_id   = alicloud_db_instance.instance.id
+  account_name     = "test_mysql_2"
+  account_password = "password2"
+  account_type     = "Normal"
+}
+
+resource "alicloud_db_connection" "internet" {
+  instance_id = alicloud_db_instance.instance.id
+}
+
+resource "null_resource" "setup_db" {
+  provisioner "local-exec" {
+    command = "mysql -u ${alicloud_rds_account.super_account.account_name} -p${alicloud_rds_account.super_account.account_password} -h ${alicloud_db_connection.internet.connection_string} -P ${alicloud_db_connection.internet.port} ${alicloud_db_database.default.name} < setup.sql"
+  }
 }

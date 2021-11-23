@@ -28,6 +28,7 @@ resource "alicloud_vswitch" "default" {
   vswitch_name = "vsw-test"
 }
 
+#https://www.alibabacloud.com/help/doc-detail/276975.htm
 resource "alicloud_db_instance" "master" {
   engine                   = "MySQL"
   engine_version           = "8.0"
@@ -39,12 +40,13 @@ resource "alicloud_db_instance" "master" {
   instance_name            = var.rds_mysql_name
 }
 
+# https://www.alibabacloud.com/help/doc-detail/276980.htm
 resource "alicloud_db_readonly_instance" "readonly" {
   master_db_instance_id = alicloud_db_instance.master.id
   zone_id               = alicloud_db_instance.master.zone_id
   engine_version        = alicloud_db_instance.master.engine_version
-  instance_type         = alicloud_db_instance.master.instance_type
-  instance_storage      = "30"
+  instance_type         = "mysqlro.x8.medium.1c"
+  instance_storage      = "300"
   instance_name         = "${var.rds_mysql_name}_ro"
   vswitch_id            = alicloud_vswitch.default.id
 }
