@@ -35,56 +35,12 @@ resource "alicloud_security_group" "group" {
   vpc_id      = alicloud_vpc.default.id
 }
 
-resource "alicloud_security_group_rule" "allow_http_3307" {
-  type              = "ingress"
-  ip_protocol       = "tcp"
-  nic_type          = "intranet"
-  policy            = "accept"
-  port_range        = "3307/3307"
-  priority          = 1
-  security_group_id = alicloud_security_group.group.id
-  cidr_ip           = "0.0.0.0/0"
-}
-
-resource "alicloud_security_group_rule" "allow_http_8001" {
-  type              = "ingress"
-  ip_protocol       = "tcp"
-  nic_type          = "intranet"
-  policy            = "accept"
-  port_range        = "8001/8001"
-  priority          = 1
-  security_group_id = alicloud_security_group.group.id
-  cidr_ip           = "0.0.0.0/0"
-}
-
-resource "alicloud_security_group_rule" "allow_https_443" {
-  type              = "ingress"
-  ip_protocol       = "tcp"
-  nic_type          = "intranet"
-  policy            = "accept"
-  port_range        = "443/443"
-  priority          = 1
-  security_group_id = alicloud_security_group.group.id
-  cidr_ip           = "0.0.0.0/0"
-}
-
 resource "alicloud_security_group_rule" "allow_ssh_22" {
   type              = "ingress"
   ip_protocol       = "tcp"
   nic_type          = "intranet"
   policy            = "accept"
   port_range        = "22/22"
-  priority          = 1
-  security_group_id = alicloud_security_group.group.id
-  cidr_ip           = "0.0.0.0/0"
-}
-
-resource "alicloud_security_group_rule" "allow_rdp_3389" {
-  type              = "ingress"
-  ip_protocol       = "tcp"
-  nic_type          = "intranet"
-  policy            = "accept"
-  port_range        = "3389/3389"
   priority          = 1
   security_group_id = alicloud_security_group.group.id
   cidr_ip           = "0.0.0.0/0"

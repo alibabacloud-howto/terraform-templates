@@ -1,7 +1,7 @@
 provider "alicloud" {
   #   access_key = "${var.access_key}"
   #   secret_key = "${var.secret_key}"
-  region = "cn-hongkong"
+  region = "ap-northeast-1"
 }
 
 variable "rds_mysql_name" {
@@ -46,10 +46,21 @@ resource "alicloud_security_group_rule" "allow_ssh_22" {
   cidr_ip           = "0.0.0.0/0"
 }
 
+resource "alicloud_security_group_rule" "allow_all_icmp" {
+  type              = "ingress"
+  ip_protocol       = "icmp"
+  nic_type          = "intranet"
+  policy            = "accept"
+  port_range        = "-1/-1"
+  priority          = 1
+  security_group_id = alicloud_security_group.group.id
+  cidr_ip           = "0.0.0.0/0"
+}
+
 ######## ECS
 resource "alicloud_instance" "instance" {
   security_groups            = alicloud_security_group.group.*.id
-  instance_type              = "ecs.c5.large" # 2core 4GB
+  instance_type              = "ecs.c6.large" # 2core 4GB
   system_disk_category       = "cloud_ssd"
   system_disk_name           = "remote_exec_mysql"
   system_disk_size           = 40
