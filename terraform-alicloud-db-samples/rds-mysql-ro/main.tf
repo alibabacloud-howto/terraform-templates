@@ -28,6 +28,56 @@ resource "alicloud_vswitch" "default" {
   vswitch_name = "vsw-test"
 }
 
+######## Security group
+resource "alicloud_security_group" "group" {
+  name        = "sg_rds_mysql"
+  description = "test_sg"
+  vpc_id      = alicloud_vpc.default.id
+}
+
+resource "alicloud_security_group_rule" "allow_ssh_22" {
+  type              = "ingress"
+  ip_protocol       = "tcp"
+  nic_type          = "intranet"
+  policy            = "accept"
+  port_range        = "22/22"
+  priority          = 1
+  security_group_id = alicloud_security_group.group.id
+  cidr_ip           = "0.0.0.0/0"
+}
+
+######## ECS
+resource "alicloud_instance" "instance" {
+  security_groups            = alicloud_security_group.group.*.id
+  instance_type              = "ecs.c5.large" # 2core 4GB
+  system_disk_category       = "cloud_ssd"
+  system_disk_name           = "remote_exec_mysql"
+  system_disk_size           = 40
+  system_disk_description    = "remote_exec_mysql_disk"
+  image_id                   = "ubuntu_20_04_x64_20G_alibase_20211027.vhd"
+  instance_name              = "remote_exec_mysql"
+  password                   = "N1cetest" ## Please change accordingly
+  instance_charge_type       = "PostPaid"
+  vswitch_id                 = alicloud_vswitch.default.id
+  internet_max_bandwidth_out = 2
+  internet_charge_type       = "PayByTraffic"
+
+  ## Provision to install MySQL client on ECS (Ubuntu)
+  provisioner "remote-exec" {
+    inline = [
+      "apt update && apt -y install mysql-client"
+    ]
+
+    connection {
+      type     = "ssh"
+      user     = "root"
+      password = self.password
+      host     = self.public_ip
+    }
+  }
+}
+
+######## RDS MySQL High Availability Primary
 resource "alicloud_db_instance" "primary" {
   engine               = "MySQL"
   engine_version       = "8.0"
@@ -36,15 +86,16 @@ resource "alicloud_db_instance" "primary" {
   instance_charge_type = "Postpaid"
   instance_name        = var.rds_mysql_name
   vswitch_id           = alicloud_vswitch.default.id
-  security_ips         = ["10.168.1.12", "100.69.7.112"]
+  security_ips         = [alicloud_vswitch.default.cidr_block]
 }
 
+######## RDS MySQL Read-Only
 resource "alicloud_db_readonly_instance" "ro" {
   master_db_instance_id = alicloud_db_instance.primary.id
   zone_id               = alicloud_db_instance.primary.zone_id
   engine_version        = alicloud_db_instance.primary.engine_version
   instance_type         = alicloud_db_instance.primary.instance_type
-  instance_storage      = "30"
+  instance_storage      = "20"
   instance_name         = "${var.rds_mysql_name}ro"
   vswitch_id            = alicloud_vswitch.default.id
 }
@@ -65,6 +116,11 @@ resource "alicloud_db_account_privilege" "privilege" {
   account_name = alicloud_rds_account.account.name
   privilege    = "ReadWrite"
   db_names     = alicloud_db_database.default.*.name
+}
+
+######### Output: ECS public IP
+output "ecs_public_ip" {
+  value = alicloud_instance.instance.public_ip
 }
 
 ######### Output: RDS MySQL Primary Connection String
