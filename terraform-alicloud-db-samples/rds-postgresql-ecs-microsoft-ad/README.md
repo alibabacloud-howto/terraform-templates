@@ -199,7 +199,7 @@ psql -h <rds_pg_url> -U ldapuser -p <rds_pg_port> -d postgres
 - ``<rds_pg_url>``: the <rds_pg_url> in Step 1
 - ``<rds_pg_port>``: the <rds_pg_port> in Step 2
 
-Such as the command is like below, please use the password of database user defined in Microsoft AD configured in Step 2. If the connection succeeds, then all the setup and configuration is successful.
+Such as the command is like below, please use the password of database user defined in Microsoft AD configured in Step 2 (it is ``ADN1cetest`` in this tutorial). If the connection succeeds, then all the setup and configuration is successful.
 
 ```
 psql -h pgm-3nsl6a419da052iy168210.pg.rds.aliyuncs.com -U ldapuser -p 5432 -d postgres
