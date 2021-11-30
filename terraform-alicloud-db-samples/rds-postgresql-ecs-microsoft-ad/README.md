@@ -81,13 +81,19 @@ Follow the screenshots below to setup the Microsoft AD DS on the Windows Server 
 
 ![image.png](https://github.com/alibabacloud-howto/terraform-templates/raw/master/terraform-alicloud-db-samples/rds-postgresql-ecs-microsoft-ad/images/ecs-ad-15.png)
 
+Now, the AD DS and DNS Server have been setup successfully.
+
 ![image.png](https://github.com/alibabacloud-howto/terraform-templates/raw/master/terraform-alicloud-db-samples/rds-postgresql-ecs-microsoft-ad/images/ecs-ad-16.png)
 
 ![image.png](https://github.com/alibabacloud-howto/terraform-templates/raw/master/terraform-alicloud-db-samples/rds-postgresql-ecs-microsoft-ad/images/ecs-ad-17.png)
 
 ![image.png](https://github.com/alibabacloud-howto/terraform-templates/raw/master/terraform-alicloud-db-samples/rds-postgresql-ecs-microsoft-ad/images/ecs-ad-18.png)
 
+Configure the AD domain name. In this tutorial, we use ``pgsqldomain.net``.
+
 ![image.png](https://github.com/alibabacloud-howto/terraform-templates/raw/master/terraform-alicloud-db-samples/rds-postgresql-ecs-microsoft-ad/images/ecs-ad-19.png)
+
+Set password for DSRM (Directory Services Restore Mode):
 
 ![image.png](https://github.com/alibabacloud-howto/terraform-templates/raw/master/terraform-alicloud-db-samples/rds-postgresql-ecs-microsoft-ad/images/ecs-ad-20.png)
 
@@ -101,9 +107,13 @@ Follow the screenshots below to setup the Microsoft AD DS on the Windows Server 
 
 ![image.png](https://github.com/alibabacloud-howto/terraform-templates/raw/master/terraform-alicloud-db-samples/rds-postgresql-ecs-microsoft-ad/images/ecs-ad-25.png)
 
+After the installation procedure finished, then the basic AD DS has been setup successfully. Then follow the steps to add users of domain administrator and database user for RDS PostgreSQL:
+
 ![image.png](https://github.com/alibabacloud-howto/terraform-templates/raw/master/terraform-alicloud-db-samples/rds-postgresql-ecs-microsoft-ad/images/ecs-ad-26.png)
 
 ![image.png](https://github.com/alibabacloud-howto/terraform-templates/raw/master/terraform-alicloud-db-samples/rds-postgresql-ecs-microsoft-ad/images/ecs-ad-27.png)
+
+Define the domain administrator name as ``dbadmin`` and set the password. In this tutorial, let's set it as ``N1cetest``, which will be used in RDS PostgreSQL AD DS setting.
 
 ![image.png](https://github.com/alibabacloud-howto/terraform-templates/raw/master/terraform-alicloud-db-samples/rds-postgresql-ecs-microsoft-ad/images/ecs-ad-28.png)
 
@@ -111,11 +121,17 @@ Follow the screenshots below to setup the Microsoft AD DS on the Windows Server 
 
 ![image.png](https://github.com/alibabacloud-howto/terraform-templates/raw/master/terraform-alicloud-db-samples/rds-postgresql-ecs-microsoft-ad/images/ecs-ad-30.png)
 
+Then set this domain administrator ``dbadmin`` as the member of the ``Domain Admins`` group.
+
 ![image.png](https://github.com/alibabacloud-howto/terraform-templates/raw/master/terraform-alicloud-db-samples/rds-postgresql-ecs-microsoft-ad/images/ecs-ad-31.png)
 
 ![image.png](https://github.com/alibabacloud-howto/terraform-templates/raw/master/terraform-alicloud-db-samples/rds-postgresql-ecs-microsoft-ad/images/ecs-ad-32.png)
 
+Similarly, add database user for RDS PostgreSQL:
+
 ![image.png](https://github.com/alibabacloud-howto/terraform-templates/raw/master/terraform-alicloud-db-samples/rds-postgresql-ecs-microsoft-ad/images/ecs-ad-33.png)
+
+Define the database user name as ``ldapuser`` and set the password. In this tutorial, let's set it as ``ADN1cetest``, which will be used as the password to connect to RDS PostgreSQL. Please be noticed that, there must be an account also with the name ``ldapuser`` created in RDS PostgreSQL.
 
 ![image.png](https://github.com/alibabacloud-howto/terraform-templates/raw/master/terraform-alicloud-db-samples/rds-postgresql-ecs-microsoft-ad/images/ecs-ad-34.png)
 
@@ -125,6 +141,8 @@ Follow the screenshots below to setup the Microsoft AD DS on the Windows Server 
 
 ![image.png](https://github.com/alibabacloud-howto/terraform-templates/raw/master/terraform-alicloud-db-samples/rds-postgresql-ecs-microsoft-ad/images/ecs-ad-37.png)
 
+Now, the AD has been setup successfully on Windows Server ECS.
+
 ---
 ### Step 3. Configure AD DS information on RDS PostgreSQL
 
@@ -132,16 +150,36 @@ Log on to the RDS PostgreSQL web console, then follow the screenshots below to s
 
 ![image.png](https://github.com/alibabacloud-howto/terraform-templates/raw/master/terraform-alicloud-db-samples/rds-postgresql-ecs-microsoft-ad/images/pg-ad-1.png)
 
+When editing the AD domain service, the content of the ``OPTION`` column should be set as:
+
+```
+ldapserver=<ECS AD Server Private IP> ldapbasedn="CN=Users,DC=pgsqldomain,DC=net" ldapbinddn="CN=<Domain Administrator User Name in AD>,CN=Users,DC=pgsqldomain,DC=net" ldapbindpasswd="<Domain Administrator User Password in AD>" ldapsearchattribute="sAMAccountName"
+```
+
+- ``<ECS AD Server Private IP>``: should be ``ad_ecs_private_ip`` in Step 1
+- ``<Domain Administrator User Name in AD>``: should be the Domain Administrator User Name defined in Step 2, that is ``dbadmin`` in this tutorial
+- ``<Domain Administrator User Password in AD>`` should be the Domain Administrator User Password in Step 2, that is ``N1cetest`` in this tutorial
+- DC should be set for ``pgsqldomain.net`` in this tutorial
+
+Such as the content is the following specifically,
+
+```
+ldapserver=192.168.0.35 ldapbasedn="CN=Users,DC=pgsqldomain,DC=net" ldapbinddn="CN=dbadmin,CN=Users,DC=pgsqldomain,DC=net" ldapbindpasswd="N1cetest" ldapsearchattribute="sAMAccountName"
+```
+
 ![image.png](https://github.com/alibabacloud-howto/terraform-templates/raw/master/terraform-alicloud-db-samples/rds-postgresql-ecs-microsoft-ad/images/pg-ad-2.png)
+
+Then add another record as following.
 
 ![image.png](https://github.com/alibabacloud-howto/terraform-templates/raw/master/terraform-alicloud-db-samples/rds-postgresql-ecs-microsoft-ad/images/pg-ad-3.png)
 
 ![image.png](https://github.com/alibabacloud-howto/terraform-templates/raw/master/terraform-alicloud-db-samples/rds-postgresql-ecs-microsoft-ad/images/pg-ad-4.png)
 
+After ``submit`` the changes, the instance is going into ``Maintaining Instance`` status, and waiting for complete and back to the ``Running`` status.
+
 ![image.png](https://github.com/alibabacloud-howto/terraform-templates/raw/master/terraform-alicloud-db-samples/rds-postgresql-ecs-microsoft-ad/images/pg-ad-5.png)
 
-ldapserver=<ECS AD Server Private IP> ldapbasedn="CN=Users,DC=pgsqldomain,DC=net" ldapbinddn="CN=<DB Admin User Name in AD>,CN=Users,DC=pgsqldomain,DC=net" ldapbindpasswd="<DB Admin User Password in AD>" ldapsearchattribute="sAMAccountName"
-ldapserver=192.168.0.35 ldapbasedn="CN=Users,DC=pgsqldomain,DC=net" ldapbinddn="CN=dbadmin,CN=Users,DC=pgsqldomain,DC=net" ldapbindpasswd="N1cetest" ldapsearchattribute="sAMAccountName"
+Now, the AD has been setup successfully on RDS PostgreSQL.
 
 ---
 ### Step 4. Verify the AD LDAP authentication for RDS PostgreSQL
@@ -152,7 +190,19 @@ Please log on to ECS with ``<demo_ecs_public_ip>`` and the password is ``N1cetes
 ssh root@<demo_ecs_public_ip>
 ```
 
-psql -h <RDS PostgreSQL Connection URL> -U ldapuser -p 5432 -d postgres
+Execute the command to connect to RDS PostgreSQL:
+
+```
+psql -h <rds_pg_url> -U ldapuser -p <rds_pg_port> -d postgres
+```
+
+- ``<rds_pg_url>``: the <rds_pg_url> in Step 1
+- ``<rds_pg_port>``: the <rds_pg_port> in Step 2
+
+Such as the command is like below, please use the password of database user defined in Microsoft AD configured in Step 2. If the connection succeeds, then all the setup and configuration is successful.
+
+```
 psql -h pgm-3nsl6a419da052iy168210.pg.rds.aliyuncs.com -U ldapuser -p 5432 -d postgres
+```
 
 ![image.png](https://github.com/alibabacloud-howto/terraform-templates/raw/master/terraform-alicloud-db-samples/rds-postgresql-ecs-microsoft-ad/images/verify.png)
