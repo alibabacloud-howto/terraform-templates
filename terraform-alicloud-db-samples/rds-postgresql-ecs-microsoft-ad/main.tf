@@ -186,7 +186,7 @@ resource "alicloud_instance" "instance" {
   system_disk_description = "microsoft_ad_app_system_disk"
   image_id                = "win2019_1809_x64_dtc_en-us_40G_container_alibase_20210916.vhd"
   instance_name           = "microsoft_ad_app"
-  password                = "WindowsN1cetest" ## Password for user "Administrator", please change accordingly
+  password                = "WindowsN1cetest" ## Password for user "administrator", please change accordingly
   instance_charge_type    = "PostPaid"
   vswitch_id              = alicloud_vswitch.vswitch_1.id
 }
@@ -266,12 +266,17 @@ resource "alicloud_eip_association" "eip_ecs" {
   instance_id   = alicloud_instance.instance.id
 }
 
-######### Output: EIP of ECS
-output "eip_ecs" {
+######### Output: AD ECS public IP
+output "ad_ecs_public_ip" {
   value = alicloud_eip.setup_ecs_access.ip_address
 }
 
-######### Output: ECS public IP
+######### Output: AD ECS private IP
+output "ad_ecs_private_ip" {
+  value = alicloud_instance.instance.private_ip
+}
+
+######### Output: demo database application ECS public IP
 output "demo_ecs_public_ip" {
   value = alicloud_instance.demo_instance.public_ip
 }
