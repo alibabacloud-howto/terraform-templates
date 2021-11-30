@@ -20,10 +20,10 @@ Deployment architecture of this tutorial:
 ---
 ### Index
 
-- [Step 1. Use Terraform to provision ECS and RDS PostgreSQL database on Alibaba Cloud]()
-- [Step 2. Setup AD DS and LDAP user for RDS PostgreSQL database authentication]()
-- [Step 3. Configure AD DS information on RDS PostgreSQL]()
-- [Step 4. Verify the AD LDAP authentication for RDS PostgreSQL]()
+- [Step 1. Use Terraform to provision ECS and RDS PostgreSQL database on Alibaba Cloud](https://github.com/alibabacloud-howto/terraform-templates/tree/master/terraform-alicloud-db-samples/rds-postgresql-ecs-microsoft-ad#step-1-use-terraform-to-provision-ecs-and-rds-postgresql-database-on-alibaba-cloud)
+- [Step 2. Setup AD DS and LDAP user for RDS PostgreSQL database authentication](https://github.com/alibabacloud-howto/terraform-templates/tree/master/terraform-alicloud-db-samples/rds-postgresql-ecs-microsoft-ad#step-2-setup-ad-ds-and-ldap-user-for-rds-postgresql-database-authentication)
+- [Step 3. Configure AD DS information on RDS PostgreSQL](https://github.com/alibabacloud-howto/terraform-templates/tree/master/terraform-alicloud-db-samples/rds-postgresql-ecs-microsoft-ad#step-3-configure-ad-ds-information-on-rds-postgresql)
+- [Step 4. Verify the AD LDAP authentication for RDS PostgreSQL](https://github.com/alibabacloud-howto/terraform-templates/tree/master/terraform-alicloud-db-samples/rds-postgresql-ecs-microsoft-ad#step-4-verify-the-ad-ldap-authentication-for-rds-postgresql)
 
 ---
 ### Step 1. Use Terraform to provision ECS and RDS PostgreSQL database on Alibaba Cloud
