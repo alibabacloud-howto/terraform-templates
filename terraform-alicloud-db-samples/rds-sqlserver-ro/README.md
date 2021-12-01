@@ -58,7 +58,7 @@ go
 
 ![image.png](https://github.com/alibabacloud-howto/terraform-templates/raw/master/terraform-alicloud-db-samples/rds-sqlserver-ro/images/sqlcmd-1.png)
 
-### Then using the command ``sqlcmd`` to connect to the SQL Server read-only instance.
+### Using the command ``sqlcmd`` to connect to the SQL Server read-only instance.
 
 ```
 sqlcmd -S <SQL_SERVER_READONLY_CONNECTION_STRING>,<SQL_SERVER_READONLY_CONNECTION_PORT> -U <USER_NAME> -P '<PASSWORD>' -d <DATABASE_NAME>
