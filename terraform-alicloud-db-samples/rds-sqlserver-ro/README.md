@@ -1,3 +1,7 @@
+### Overview
+
+![image.png](https://github.com/alibabacloud-howto/terraform-templates/raw/master/terraform-alicloud-db-samples/rds-sqlserver-ro/images/archi.png)
+
 ### Use Terraform to provision ECS and RDS SQL Server database (Primary + Read-Only) on Alibaba Cloud
 
 If you are the 1st time to use Terraform, please refer to [https://github.com/alibabacloud-howto/terraform-templates](https://github.com/alibabacloud-howto/terraform-templates) to learn how to install and use the Terraform on different operating systems.
