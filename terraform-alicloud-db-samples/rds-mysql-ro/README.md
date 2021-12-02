@@ -10,4 +10,4 @@ https://github.com/alibabacloud-howto/terraform-templates/tree/master/terraform-
 
 - Video tutorial:
 
-[![Watch the video]](https://www.youtube.com/watch?v=BgDO3DvEo1g)
+[![Watch the video](https://img.youtube.com/vi/BgDO3DvEo1g/default.jpg)](https://www.youtube.com/watch?v=BgDO3DvEo1g)
