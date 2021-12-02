@@ -7,3 +7,7 @@ https://github.com/alibabacloud-howto/terraform-templates/tree/master/terraform-
 - Deployment architecture of this tutorial:
 
 ![image.png](https://github.com/alibabacloud-howto/terraform-templates/raw/master/terraform-alicloud-db-samples/rds-mysql-ro/images/archi.png)
+
+- Video tutorial:
+
+[![Watch the video]](https://www.youtube.com/watch?v=BgDO3DvEo1g)
