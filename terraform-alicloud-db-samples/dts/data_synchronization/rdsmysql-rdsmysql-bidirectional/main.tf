@@ -9,7 +9,7 @@ variable "region" {
 }
 
 variable "creation" {
-  default = "PolarDB"
+  default = "Rds"
 }
 
 data "alicloud_zones" "default" {
