@@ -36,7 +36,20 @@ resource "alicloud_dts_synchronization_job" "default" {
   destination_endpoint_database_name = "test_database"
   destination_endpoint_user_name     = "test_adbpg"
   destination_endpoint_password      = "N1cetest"
-  db_list                            = "{\"test_database\":{\"name\":\"test_database\",\"all\":true}}"
+  db_list                            = <<-EOT
+                                        {\"test_database\":{
+                                          \"name\":\"test_database\",
+                                          \"all\":false,
+                                          \"Table\":{
+                                            \"test_table\":{
+                                              \"all\":true,
+                                              \"name\":\"test_table\",
+                                              \"primary_key\":\"c1\",
+                                              \"type\":\"partition\"
+                                            }
+                                          }
+                                        }}
+                                       EOT 
   structure_initialization           = "true"
   data_initialization                = "true"
   data_synchronization               = "true"
