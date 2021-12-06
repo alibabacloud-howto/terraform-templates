@@ -31,7 +31,7 @@ resource "alicloud_vswitch" "default" {
 resource "alicloud_db_instance" "instance" {
   engine           = "PostgreSQL"
   engine_version   = "12.0"
-  instance_type    = "pg.n2.small.1"
+  instance_type    = "pg.n2.small.2c" ## pg.n2.small.1(Basic 1C2GB), pg.n2.small.2c (HA 1C2GB)
   instance_storage = "20"
   vswitch_id       = alicloud_vswitch.default.id
   instance_name    = var.rds_postgresql_name
