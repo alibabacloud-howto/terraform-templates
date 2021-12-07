@@ -16,57 +16,23 @@ data "alicloud_zones" "default" {
   available_resource_creation = var.creation
 }
 
-## ------------------- Your environment parameters
-## VPC ID
-variable "vpc_id" {
-  default = "vpc-xxx"
+resource "alicloud_vpc" "default" {
+  vpc_name   = "vpc-test"
+  cidr_block = "172.16.0.0/16"
 }
 
-## VSW ID
-variable "vswitch_id" {
-  default = "vsw-xxx"
+resource "alicloud_vswitch" "default" {
+  vpc_id       = alicloud_vpc.default.id
+  cidr_block   = "172.16.0.0/24"
+  zone_id      = data.alicloud_zones.default.zones[0].id
+  vswitch_name = "vsw-test"
 }
-
-## PolarDB MySQL as source
-variable "polardbm_id" {
-  default = "pc-xxx"
-}
-
-variable "polardbm_connection_string" {
-  default = "pc-xxx.mysql.polardb.ap-southeast-5.rds.aliyuncs.com"
-}
-
-variable "polardbm_account_name" {
-  default = "test_polardb"
-}
-
-variable "polardbm_account_password" {
-  default = "N1cetest"
-}
-
-## AnalyticDB PostgreSQL as target
-variable "adbpg_id" {
-  default = "gp-xxx"
-}
-
-variable "adbpg_connection_string" {
-  default = "gp-xxx-master.gpdbmaster.ap-southeast-5.rds.aliyuncs.com"
-}
-
-variable "adbpg_account_name" {
-  default = "test_adb"
-}
-
-variable "adbpg_account_password" {
-  default = "N1cetest"
-}
-## -------------------
 
 ######## Security group
 resource "alicloud_security_group" "group" {
-  name        = "sg_dts_test"
-  description = "Security group for DTS test"
-  vpc_id      = var.vpc_id
+  name        = "sg_apache_shardingsphere"
+  description = "Security group for apache shardingsphere"
+  vpc_id      = alicloud_vpc.default.id
 }
 
 resource "alicloud_security_group_rule" "allow_ssh_22" {
@@ -93,7 +59,8 @@ resource "alicloud_security_group_rule" "allow_all_icmp" {
 
 ######## ECS
 resource "alicloud_instance" "instance" {
-  security_groups            = alicloud_security_group.group.*.id
+  security_groups = alicloud_security_group.group.*.id
+
   instance_type              = "ecs.c5.large" # 2core 4GB
   system_disk_category       = "cloud_ssd"
   system_disk_name           = "remote_exec_adbpg"
@@ -103,9 +70,64 @@ resource "alicloud_instance" "instance" {
   instance_name              = "remote_exec_adbpg"
   password                   = "N1cetest" ## Please change accordingly
   instance_charge_type       = "PostPaid"
-  vswitch_id                 = var.vswitch_id
-  internet_max_bandwidth_out = 5
+  vswitch_id                 = alicloud_vswitch.default.id
+  internet_max_bandwidth_out = 2
   internet_charge_type       = "PayByTraffic"
+}
+
+## PolarDB MySQL as source
+resource "alicloud_polardb_cluster" "source" {
+  db_type       = "MySQL"
+  db_version    = "8.0"
+  db_node_class = "polar.mysql.g2.medium"
+  pay_type      = "PostPaid"
+  vswitch_id    = alicloud_vswitch.default.id
+  description   = "PolarDB MySQL as DTS Source"
+  parameters {
+    name  = "loose_polar_log_bin"
+    value = "ON"
+  }
+}
+
+resource "alicloud_polardb_account" "source_account" {
+  db_cluster_id       = alicloud_polardb_cluster.source.id
+  account_name        = "test_polardb"
+  account_password    = "N1cetest"
+  account_description = "PolarDB MySQL as DTS Source"
+}
+
+resource "alicloud_polardb_database" "source_db" {
+  db_cluster_id = alicloud_polardb_cluster.source.id
+  db_name       = "test_database"
+}
+
+resource "alicloud_polardb_account_privilege" "source_privilege" {
+  db_cluster_id     = alicloud_polardb_cluster.source.id
+  account_name      = alicloud_polardb_account.source_account.account_name
+  account_privilege = "ReadWrite"
+  db_names          = [alicloud_polardb_database.source_db.db_name]
+}
+
+## AnalyticDB PostgreSQL as target
+resource "alicloud_gpdb_elastic_instance" "target" {
+  engine                  = "gpdb"
+  engine_version          = "6.0"
+  seg_storage_type        = "cloud_essd"
+  seg_node_num            = 4
+  storage_size            = 50
+  instance_spec           = "2C16G"
+  db_instance_description = "Created by terraform"
+  instance_network_type   = "VPC"
+  payment_type            = "PayAsYouGo"
+  vswitch_id              = alicloud_vswitch.default.id
+  security_ip_list        = [alicloud_vswitch.default.cidr_block]
+}
+
+resource "alicloud_gpdb_account" "target_account" {
+  db_instance_id      = alicloud_gpdb_elastic_instance.target.id
+  account_name        = "test_adb"
+  account_password    = "N1cetest"
+  account_description = "Terraform_demo"
 }
 
 ## DTS Data Synchronization
@@ -123,19 +145,19 @@ resource "alicloud_dts_synchronization_job" "default" {
   dts_instance_id                    = alicloud_dts_synchronization_instance.default.id
   dts_job_name                       = "tf-polardbm-adbpg"
   source_endpoint_instance_type      = "PolarDB"
-  source_endpoint_instance_id        = var.polardbm_id
+  source_endpoint_instance_id        = alicloud_polardb_cluster.source.id
   source_endpoint_engine_name        = "PolarDB"
   source_endpoint_region             = var.region
-  source_endpoint_database_name      = "test_database"
-  source_endpoint_user_name          = var.polardbm_account_name
-  source_endpoint_password           = var.polardbm_account_password
+  source_endpoint_database_name      = alicloud_polardb_database.source_db.db_name
+  source_endpoint_user_name          = alicloud_polardb_account.source_account.account_name
+  source_endpoint_password           = alicloud_polardb_account.source_account.account_password
   destination_endpoint_instance_type = "GREENPLUM"
-  destination_endpoint_instance_id   = var.adbpg_id
+  destination_endpoint_instance_id   = alicloud_gpdb_elastic_instance.target.id
   destination_endpoint_engine_name   = "GREENPLUM"
   destination_endpoint_region        = var.region
   destination_endpoint_database_name = "test_database"
-  destination_endpoint_user_name     = var.adbpg_account_name
-  destination_endpoint_password      = var.adbpg_account_password
+  destination_endpoint_user_name     = alicloud_gpdb_account.target_account.account_name
+  destination_endpoint_password      = alicloud_gpdb_account.target_account.account_password
   db_list = jsonencode(
     { "test_database" : {
       "name" : "test_database",
@@ -145,7 +167,6 @@ resource "alicloud_dts_synchronization_job" "default" {
           "all" : true,
           "name" : "t_order",
           "primary_key" : "order_id",
-          "part_key" : "order_id",
           "type" : "partition"
         }
       }
@@ -155,10 +176,6 @@ resource "alicloud_dts_synchronization_job" "default" {
   data_initialization      = "true"
   data_synchronization     = "true"
   status                   = "Synchronizing"
-
-  depends_on = [
-    null_resource.setup_db,
-  ]
 }
 
 ##### Provisioner to setup database
@@ -211,7 +228,7 @@ resource "null_resource" "setup_db" {
 
   provisioner "remote-exec" {
     inline = [
-      "mysql -u ${var.polardbm_account_name} -p${var.polardbm_account_password} -h ${var.polardbm_connection_string} test_database < /root/setup_polardbm.sql"
+      "mysql -u ${alicloud_polardb_account.source_account.account_name} -p${alicloud_polardb_account.source_account.account_password} -h ${alicloud_polardb_cluster.source.connection_string} ${alicloud_polardb_database.source_db.db_name} < /root/setup_polardbm.sql"
     ]
 
     connection {
@@ -224,7 +241,7 @@ resource "null_resource" "setup_db" {
 
   provisioner "remote-exec" {
     inline = [
-      "PGPASSWORD=${var.adbpg_account_password} /root/adbpg_client_package/bin/psql -h${var.adbpg_connection_string} -U${var.adbpg_account_name} -f /root/setup_adbpg.sql"
+      "PGPASSWORD=${alicloud_gpdb_account.target_account.account_password} /root/adbpg_client_package/bin/psql -h${alicloud_gpdb_elastic_instance.target.connection_string} -U${alicloud_gpdb_account.target_account.account_name} adbpg -f /root/setup_adbpg.sql"
     ]
 
     connection {
@@ -241,7 +258,12 @@ output "ecs_public_ip" {
   value = alicloud_instance.instance.public_ip
 }
 
-######### Output: DTS task ID
-output "dts_id" {
-  value = alicloud_dts_synchronization_instance.default.id
+######### Output: PolarDB MySQL Connection String
+output "polardb_mysql_url" {
+  value = alicloud_polardb_cluster.source.connection_string
+}
+
+######### Output: ADB PG Connection String
+output "abdpg_url" {
+  value = alicloud_gpdb_elastic_instance.target.connection_string
 }

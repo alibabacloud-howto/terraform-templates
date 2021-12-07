@@ -110,24 +110,24 @@ resource "alicloud_dts_synchronization_job" "default" {
   destination_endpoint_database_name = "test_database"
   destination_endpoint_user_name     = alicloud_adb_account.account.account_name
   destination_endpoint_password      = alicloud_adb_account.account.account_password
-  db_list                            = jsonencode(
-                                        {"test_database":{
-                                          "name":"test_database",
-                                          "all":false,
-                                          "Table":{
-                                            "t_order":{
-                                              "all":true,
-                                              "name":"t_order",
-                                              "primary_key":"order_id",
-                                              "type":"partition"
-                                            }
-                                          }
-                                        }}
-                                       )
-  structure_initialization           = "true"
-  data_initialization                = "true"
-  data_synchronization               = "true"
-  status                             = "Synchronizing"
+  db_list = jsonencode(
+    { "test_database" : {
+      "name" : "test_database",
+      "all" : false,
+      "Table" : {
+        "t_order" : {
+          "all" : true,
+          "name" : "t_order",
+          "primary_key" : "order_id",
+          "type" : "partition"
+        }
+      }
+    } }
+  )
+  structure_initialization = "true"
+  data_initialization      = "true"
+  data_synchronization     = "true"
+  status                   = "Synchronizing"
 }
 
 resource "null_resource" "setup_db" {

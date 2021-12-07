@@ -112,7 +112,7 @@ resource "alicloud_rds_account" "normal_account_2" {
   account_type     = "Normal"
 }
 
-##### Privisioner to setup database
+##### Provisioner to setup database
 ## Step 1: load SQL file to ECS
 ## Step 2: install MySQL client on ECS
 ## Step 3: connect to RDS MySQL and execute the SQL file
