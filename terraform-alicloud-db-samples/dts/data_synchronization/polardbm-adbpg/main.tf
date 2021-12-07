@@ -41,9 +41,9 @@ resource "alicloud_dts_synchronization_job" "default" {
                                           \"name\":\"test_database\",
                                           \"all\":false,
                                           \"Table\":{
-                                            \"test_table\":{
+                                            \"t_order\":{
                                               \"all\":true,
-                                              \"name\":\"test_table\",
+                                              \"name\":\"t_order\",
                                               \"primary_key\":\"c1\",
                                               \"type\":\"partition\"
                                             }

@@ -36,6 +36,7 @@ resource "alicloud_db_instance" "source" {
   instance_storage = "10"
   vswitch_id       = alicloud_vswitch.default.id
   instance_name    = "rds-mysql-source"
+  security_ips     = ["0.0.0.0/0"]
 }
 
 resource "alicloud_db_database" "source_db" {
@@ -54,6 +55,10 @@ resource "alicloud_db_account_privilege" "source_privilege" {
   account_name = alicloud_rds_account.source_account.name
   privilege    = "ReadWrite"
   db_names     = alicloud_db_database.source_db.*.name
+}
+
+resource "alicloud_db_connection" "internet" {
+  instance_id = alicloud_db_instance.source.id
 }
 
 ## AnalyticDB MySQL Target
@@ -105,9 +110,28 @@ resource "alicloud_dts_synchronization_job" "default" {
   destination_endpoint_database_name = "test_database"
   destination_endpoint_user_name     = alicloud_adb_account.account.account_name
   destination_endpoint_password      = alicloud_adb_account.account.account_password
-  db_list                            = "{\"test_database\":{\"name\":\"test_database\",\"all\":true}}"
+  db_list                            = jsonencode(
+                                        {"test_database":{
+                                          "name":"test_database",
+                                          "all":false,
+                                          "Table":{
+                                            "t_order":{
+                                              "all":true,
+                                              "name":"t_order",
+                                              "primary_key":"order_id",
+                                              "type":"partition"
+                                            }
+                                          }
+                                        }}
+                                       )
   structure_initialization           = "true"
   data_initialization                = "true"
   data_synchronization               = "true"
   status                             = "Synchronizing"
+}
+
+resource "null_resource" "setup_db" {
+  provisioner "local-exec" {
+    command = "mysql -u ${alicloud_rds_account.source_account.account_name} -p${alicloud_rds_account.source_account.account_password} -h ${alicloud_db_connection.internet.connection_string} -P ${alicloud_db_connection.internet.port} ${alicloud_db_database.source_db.name} < setup.sql"
+  }
 }
