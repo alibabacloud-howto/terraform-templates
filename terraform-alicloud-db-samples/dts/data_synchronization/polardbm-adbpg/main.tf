@@ -164,7 +164,7 @@ resource "alicloud_dts_synchronization_job" "default" {
 ##### Provisioner to setup database
 ## Step 1: load SQL files to ECS
 ## Step 2: install MySQL and ADB PG client on ECS
-## Step 3: connect to PolarDB MySQL and execute the SQL file to create table "t_order" as the DTS target table
+## Step 3: connect to PolarDB MySQL and execute the SQL file to create table "t_order" as the DTS source table
 ## Step 4: connect to ADB PG and execute the SQL file to create database "test_database" as the DTS target database
 resource "null_resource" "setup_db" {
   provisioner "file" {

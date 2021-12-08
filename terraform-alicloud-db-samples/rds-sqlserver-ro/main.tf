@@ -82,6 +82,7 @@ resource "alicloud_db_instance" "primary" {
   instance_storage = "20"
   vswitch_id       = alicloud_vswitch.default.id
   instance_name    = var.rds_sqlserver_name
+  security_ips     = [alicloud_vswitch.default.cidr_block]
 }
 
 ######## RDS SQL Server Read-Only
