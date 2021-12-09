@@ -61,7 +61,7 @@ resource "alicloud_security_group_rule" "allow_all_icmp" {
 resource "alicloud_instance" "instance" {
   security_groups = alicloud_security_group.group.*.id
 
-  instance_type              = "ecs.c5.large" # 2core 4GB
+  instance_type              = "ecs.c6.large" # 2core 4GB
   system_disk_category       = "cloud_ssd"
   system_disk_name           = "remote_exec_mysql"
   system_disk_size           = 40

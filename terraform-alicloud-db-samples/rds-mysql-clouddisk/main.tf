@@ -1,19 +1,11 @@
 provider "alicloud" {
   #   access_key = "${var.access_key}"
   #   secret_key = "${var.secret_key}"
-  region = "cn-hongkong"
+  region = "ap-southeast-3"
 }
 
 variable "rds_mysql_name" {
   default = "rds_mysql"
-}
-
-variable "creation" {
-  default = "Rds"
-}
-
-data "alicloud_zones" "default" {
-  available_resource_creation = var.creation
 }
 
 resource "alicloud_vpc" "default" {
@@ -24,7 +16,7 @@ resource "alicloud_vpc" "default" {
 resource "alicloud_vswitch" "default" {
   vpc_id       = alicloud_vpc.default.id
   cidr_block   = "172.16.0.0/24"
-  zone_id      = data.alicloud_zones.default.zones[0].id
+  zone_id      = "ap-southeast-3b"
   vswitch_name = "vsw-test"
 }
 
@@ -34,9 +26,11 @@ resource "alicloud_db_instance" "instance" {
   instance_type            = "mysql.x2.medium.2c"
   instance_storage         = "50"
   db_instance_storage_type = "cloud_essd"
-  instance_charge_type     = "Postpaid"
   vswitch_id               = alicloud_vswitch.default.id
   instance_name            = var.rds_mysql_name
+  instance_charge_type     = "Prepaid"
+  period                   = 1
+  auto_renew               = false
 }
 
 resource "alicloud_db_database" "default" {

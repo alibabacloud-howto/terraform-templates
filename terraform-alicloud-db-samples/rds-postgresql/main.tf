@@ -1,7 +1,7 @@
 provider "alicloud" {
   #   access_key = "${var.access_key}"
   #   secret_key = "${var.secret_key}"
-  region = "cn-hongkong"
+  region = "ap-southeast-5"
 }
 
 variable "rds_postgresql_name" {
@@ -30,11 +30,15 @@ resource "alicloud_vswitch" "default" {
 
 resource "alicloud_db_instance" "instance" {
   engine           = "PostgreSQL"
-  engine_version   = "12.0"
-  instance_type    = "pg.n2.small.2c" ## pg.n2.small.1(Basic 1C2GB), pg.n2.small.2c (HA 1C2GB)
+  engine_version   = "13.0"
+  instance_type    = "pg.n2.small.1" ## pg.n2.small.1(Basic 1C2GB), pg.n2.small.2c (HA 1C2GB)
   instance_storage = "20"
   vswitch_id       = alicloud_vswitch.default.id
   instance_name    = var.rds_postgresql_name
+  # instance_charge_type = "Postpaid"
+  instance_charge_type = "Prepaid"
+  period               = 1
+  auto_renew           = false
 }
 
 resource "alicloud_db_database" "default" {

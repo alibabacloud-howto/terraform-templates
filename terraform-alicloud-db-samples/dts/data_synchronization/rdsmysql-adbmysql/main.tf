@@ -28,6 +28,52 @@ resource "alicloud_vswitch" "default" {
   vswitch_name = "vsw-test"
 }
 
+######## Security group
+resource "alicloud_security_group" "group" {
+  name        = "sg_dts_test"
+  description = "Security group for DTS test"
+  vpc_id      = alicloud_vpc.default.id
+}
+
+resource "alicloud_security_group_rule" "allow_ssh_22" {
+  type              = "ingress"
+  ip_protocol       = "tcp"
+  nic_type          = "intranet"
+  policy            = "accept"
+  port_range        = "22/22"
+  priority          = 1
+  security_group_id = alicloud_security_group.group.id
+  cidr_ip           = "0.0.0.0/0"
+}
+
+resource "alicloud_security_group_rule" "allow_all_icmp" {
+  type              = "ingress"
+  ip_protocol       = "icmp"
+  nic_type          = "intranet"
+  policy            = "accept"
+  port_range        = "-1/-1"
+  priority          = 1
+  security_group_id = alicloud_security_group.group.id
+  cidr_ip           = "0.0.0.0/0"
+}
+
+######## ECS
+resource "alicloud_instance" "instance" {
+  security_groups            = alicloud_security_group.group.*.id
+  instance_type              = "ecs.c6.large" # 2core 4GB
+  system_disk_category       = "cloud_ssd"
+  system_disk_name           = "dts_demo"
+  system_disk_size           = 40
+  system_disk_description    = "dts_demo_disk"
+  image_id                   = "centos_8_4_x64_20G_alibase_20211027.vhd"
+  instance_name              = "dts_demo"
+  password                   = "N1cetest" ## Please change accordingly
+  instance_charge_type       = "PostPaid"
+  vswitch_id                 = alicloud_vswitch.default.id
+  internet_max_bandwidth_out = 5
+  internet_charge_type       = "PayByTraffic"
+}
+
 ## RDS MySQL Source
 resource "alicloud_db_instance" "source" {
   engine           = "MySQL"
@@ -36,7 +82,7 @@ resource "alicloud_db_instance" "source" {
   instance_storage = "10"
   vswitch_id       = alicloud_vswitch.default.id
   instance_name    = "rds-mysql-source"
-  security_ips     = ["0.0.0.0/0"]
+  security_ips     = [alicloud_vswitch.default.cidr_block]
 }
 
 resource "alicloud_db_database" "source_db" {
@@ -72,7 +118,7 @@ resource "alicloud_adb_db_cluster" "target" {
   vswitch_id         = alicloud_vswitch.default.id
   description        = "AnalyticDB in elastic mode."
   maintain_time      = "23:00Z-00:00Z"
-  # security_ips       = ["10.168.1.12", "10.168.1.11"]
+  security_ips       = [alicloud_vswitch.default.cidr_block]
 }
 
 resource "alicloud_adb_account" "account" {
@@ -111,18 +157,21 @@ resource "alicloud_dts_synchronization_job" "default" {
   destination_endpoint_user_name     = alicloud_adb_account.account.account_name
   destination_endpoint_password      = alicloud_adb_account.account.account_password
   db_list = jsonencode(
-    { "test_database" : {
-      "name" : "test_database",
-      "all" : false,
-      "Table" : {
-        "t_order" : {
-          "all" : true,
-          "name" : "t_order",
-          "primary_key" : "order_id",
-          "type" : "partition"
+    {
+      "test_database" : {
+        "name" : "test_database",
+        "all" : false,
+        "Table" : {
+          "t_order" : {
+            "all" : true,
+            "name" : "t_order",
+            "part_key" : "order_id",
+            "primary_key" : "order_id",
+            "type" : "partition"
+          }
         }
       }
-    } }
+    }
   )
   structure_initialization = "true"
   data_initialization      = "true"
@@ -130,8 +179,66 @@ resource "alicloud_dts_synchronization_job" "default" {
   status                   = "Synchronizing"
 }
 
+##### Provisioner to setup database
+## Step 1: load SQL file and demo program file to ECS
+## Step 2: install MySQL client, Python and Python MySQL connector on ECS
+## Step 3: connect to RDS MySQL and execute the SQL file to create table "t_order" as the DTS source table
 resource "null_resource" "setup_db" {
-  provisioner "local-exec" {
-    command = "mysql -u ${alicloud_rds_account.source_account.account_name} -p${alicloud_rds_account.source_account.account_password} -h ${alicloud_db_connection.internet.connection_string} -P ${alicloud_db_connection.internet.port} ${alicloud_db_database.source_db.name} < setup.sql"
+  provisioner "file" {
+    source      = "setup_source_rdsmysql.sql"
+    destination = "/root/setup_source_rdsmysql.sql"
+
+    connection {
+      type     = "ssh"
+      user     = "root"
+      password = alicloud_instance.instance.password
+      host     = alicloud_instance.instance.public_ip
+    }
   }
+
+  provisioner "remote-exec" {
+    inline = [
+      "yum install -y mysql.x86_64",
+    ]
+
+    connection {
+      type     = "ssh"
+      user     = "root"
+      password = alicloud_instance.instance.password
+      host     = alicloud_instance.instance.public_ip
+    }
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "mysql -u ${alicloud_rds_account.source_account.account_name} -p${alicloud_rds_account.source_account.account_password} -h ${alicloud_db_instance.source.connection_string} ${alicloud_db_database.source_db.name} < /root/setup_source_rdsmysql.sql"
+    ]
+
+    connection {
+      type     = "ssh"
+      user     = "root"
+      password = alicloud_instance.instance.password
+      host     = alicloud_instance.instance.public_ip
+    }
+  }
+}
+
+######### Output: ECS public IP
+output "ecs_public_ip" {
+  value = alicloud_instance.instance.public_ip
+}
+
+######### Output: DTS task ID
+output "dts_id" {
+  value = alicloud_dts_synchronization_instance.default.id
+}
+
+######### Output: RDS MySQL connection URL
+output "rds_mysql_connection_url" {
+  value = alicloud_db_instance.source.connection_string
+}
+
+######### Output: AnalyticDB MySQL connection URL
+output "analyticdb_mysql_connection_url" {
+  value = alicloud_adb_db_cluster.target.connection_string
 }
