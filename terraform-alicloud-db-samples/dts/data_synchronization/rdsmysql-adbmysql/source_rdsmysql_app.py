@@ -10,7 +10,7 @@ db = pymysql.connect(host="rm-xxx.mysql.xxx.rds.aliyuncs.com",
 
 cursor = db.cursor()
 
-for num in range(10, 10000):
+for num in range(1, 10000):
     try:
         sql = "INSERT INTO t_order (order_id, user_id, info, c1, crt_time) VALUES (" + \
             str(num) + ", " + str(num) + ",'" + \
