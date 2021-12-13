@@ -14,8 +14,8 @@ More tutorial around Alibaba Cloud Database, please refer to:
 ---
 ### Index
 
-- [Step 1. Use Terraform to provision services on Alibaba Cloud]()
-- [Step 2. Run the demo application]()
+- [Step 1. Use Terraform to provision services on Alibaba Cloud](https://github.com/alibabacloud-howto/terraform-templates/tree/master/terraform-alicloud-db-samples/dts/data_synchronization/rdsmysql-adbmysql#step-1-use-terraform-to-provision-services-on-alibaba-cloud)
+- [Step 2. Run the demo application](https://github.com/alibabacloud-howto/terraform-templates/tree/master/terraform-alicloud-db-samples/dts/data_synchronization/rdsmysql-adbmysql#step-2-run-the-demo-application)
 
 ---
 ### Step 1. Use Terraform to provision services on Alibaba Cloud
