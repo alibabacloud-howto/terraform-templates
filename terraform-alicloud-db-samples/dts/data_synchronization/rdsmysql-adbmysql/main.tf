@@ -177,6 +177,11 @@ resource "alicloud_dts_synchronization_job" "default" {
   data_initialization      = "true"
   data_synchronization     = "true"
   status                   = "Synchronizing"
+
+  # Configure the DTS task after the source RDS MySQL has been setup
+  depends_on = [
+    null_resource.setup_db,
+  ]
 }
 
 ##### Provisioner to setup database
@@ -196,9 +201,34 @@ resource "null_resource" "setup_db" {
     }
   }
 
+  provisioner "file" {
+    source      = "source_rdsmysql_app.py"
+    destination = "/root/source_rdsmysql_app.py"
+
+    connection {
+      type     = "ssh"
+      user     = "root"
+      password = alicloud_instance.instance.password
+      host     = alicloud_instance.instance.public_ip
+    }
+  }
+
+  provisioner "file" {
+    source      = "target_adbmysql_app.py"
+    destination = "/root/target_adbmysql_app.py"
+
+    connection {
+      type     = "ssh"
+      user     = "root"
+      password = alicloud_instance.instance.password
+      host     = alicloud_instance.instance.public_ip
+    }
+  }
+
   provisioner "remote-exec" {
     inline = [
       "yum install -y mysql.x86_64",
+      "pip3 install pymysql",
     ]
 
     connection {
@@ -221,16 +251,17 @@ resource "null_resource" "setup_db" {
       host     = alicloud_instance.instance.public_ip
     }
   }
+
+  # Depends on account privilege has been setup to execute SQL on RDS MySQL
+  depends_on = [
+    alicloud_db_account_privilege.source_privilege,
+    alicloud_adb_account.account,
+  ]
 }
 
 ######### Output: ECS public IP
 output "ecs_public_ip" {
   value = alicloud_instance.instance.public_ip
-}
-
-######### Output: DTS task ID
-output "dts_id" {
-  value = alicloud_dts_synchronization_instance.default.id
 }
 
 ######### Output: RDS MySQL connection URL
@@ -241,4 +272,14 @@ output "rds_mysql_connection_url" {
 ######### Output: AnalyticDB MySQL connection URL
 output "analyticdb_mysql_connection_url" {
   value = alicloud_adb_db_cluster.target.connection_string
+}
+
+######### Output: DTS instance ID
+output "dts_instance_id" {
+  value = alicloud_dts_synchronization_instance.default.id
+}
+
+######### Output: DTS job ID
+output "dts_job_id" {
+  value = alicloud_dts_synchronization_job.default.id
 }
