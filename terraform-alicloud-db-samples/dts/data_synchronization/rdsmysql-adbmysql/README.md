@@ -62,3 +62,7 @@ python3 target_adbmysql_app.py
 ```
 
 ![image.png](https://github.com/alibabacloud-howto/terraform-templates/raw/master/terraform-alicloud-db-samples/dts/data_synchronization/rdsmysql-adbmysql/images/demo.png)
+
+- Video tutorial:
+
+[![Watch the video](https://img.youtube.com/vi/R34UdUb80PI/default.jpg)](https://www.youtube.com/watch?v=R34UdUb80PI)
