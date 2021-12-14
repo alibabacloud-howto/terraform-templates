@@ -24,6 +24,8 @@ If you are the 1st time to use Terraform, please refer to [https://github.com/al
 
 Run the [terraform script](https://github.com/alibabacloud-howto/terraform-templates/blob/master/terraform-alicloud-db-samples/dts/data_synchronization/rdsmysql-adbmysql/main.tf) to provision the resources and services.
 
+![image.png](https://github.com/alibabacloud-howto/terraform-templates/raw/master/terraform-alicloud-db-samples/dts/data_synchronization/rdsmysql-adbmysql/images/tf-done.png)
+
 ---
 ### Step 2. Run the demo application
 
@@ -40,9 +42,23 @@ cd ~
 vim source_rdsmysql_app.py
 ```
 
+Then run this Python script as the OLTP demo application, which will be continuously inserting data into the RDS MySQL database.
+
+```
+python3 source_rdsmysql_app.py
+```
+
 Within another CLI window, edit and configure ``target_adbmysql_app.py`` with connection to AnalyticDB MySQL, then run it as the OLAP demo application.
 
 ```
 cd ~
 vim target_adbmysql_app.py
 ```
+
+Then run this Python script as the OLAP demo application, which will be continuously querying data from the AnalyticDB MySQL data warehouse.
+
+```
+python3 target_adbmysql_app.py
+```
+
+![image.png](https://github.com/alibabacloud-howto/terraform-templates/raw/master/terraform-alicloud-db-samples/dts/data_synchronization/rdsmysql-adbmysql/images/demo.png)
