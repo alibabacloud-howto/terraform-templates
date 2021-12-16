@@ -78,6 +78,7 @@ Using Terraform to obtain available zones for Alibaba Cloud Database products on
 | ![image.png](https://github.com/alibabacloud-howto/database/raw/main/apsaradb-logos/hbase-64.png) | [HBase](https://www.alibabacloud.com/product/hbase) | https://github.com/alibabacloud-howto/terraform-templates/blob/master/terraform-alicloud-db-samples/hbase/main.tf |
 | ![image.png](https://github.com/alibabacloud-howto/database/raw/main/apsaradb-logos/tsdb-64.png) | [InfluxDB](https://www.alibabacloud.com/product/hitsdb_influxdb) | https://github.com/alibabacloud-howto/terraform-templates/blob/master/terraform-alicloud-db-samples/influxdb/main.tf |
 | ![image.png](https://github.com/alibabacloud-howto/database/raw/main/apsaradb-logos/tsdb-64.png) | [TSDB](https://www.alibabacloud.com/product/hitsdb) | https://github.com/alibabacloud-howto/terraform-templates/blob/master/terraform-alicloud-db-samples/tsdb/main.tf |
+| ![image.png](https://github.com/alibabacloud-howto/database/raw/main/apsaradb-logos/dts-64.png) | [DTS](https://www.alibabacloud.com/product/data-transmission-service) | https://github.com/alibabacloud-howto/terraform-templates/tree/master/terraform-alicloud-db-samples/dts |
 
 ---
 ## Example Solutions with Terraform on Alibaba Cloud
