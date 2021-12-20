@@ -22,7 +22,7 @@ for num in range(1, 10000):
 
     except Exception as e:
         db.rollback()
-        print
+        print(e)
 
 cursor.close()
 db.close()

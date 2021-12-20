@@ -29,16 +29,16 @@ resource "alicloud_vswitch" "default" {
 }
 
 resource "alicloud_db_instance" "instance" {
-  engine               = "MySQL"
-  engine_version       = "8.0"
-  instance_type        = "rds.mysql.s1.small"
-  instance_storage     = "10"
-  vswitch_id           = alicloud_vswitch.default.id
-  instance_name        = var.rds_mysql_name
+  engine           = "MySQL"
+  engine_version   = "8.0"
+  instance_type    = "rds.mysql.s1.small"
+  instance_storage = "10"
+  vswitch_id       = alicloud_vswitch.default.id
+  instance_name    = var.rds_mysql_name
   instance_charge_type = "Postpaid"
   # instance_charge_type = "Prepaid"
   # period               = 1
-  # auto_renew = false
+  # auto_renew           = false
   # parameters {
   #   name  = "tls_version"
   #   value = "TLSv1.2"
