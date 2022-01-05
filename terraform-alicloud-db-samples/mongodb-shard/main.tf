@@ -93,3 +93,20 @@ resource "alicloud_mongodb_sharding_instance" "foo" {
     }
   }
 }
+
+# resource "alicloud_mongodb_account" "foo" {
+#   account_name        = "root"
+#   account_password    = "N1cetest"
+#   instance_id         = alicloud_mongodb_sharding_instance.foo.id
+#   account_description = "example_value"
+# }
+
+######### Output: MongoDB Connection String
+output "mongodb_sharding_instance_id" {
+  value = alicloud_mongodb_sharding_instance.foo.id
+}
+
+output "mongodb_config_server_list" {
+  value = alicloud_mongodb_sharding_instance.foo.config_server_list
+}
+
