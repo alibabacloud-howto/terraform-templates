@@ -1,7 +1,7 @@
 provider "alicloud" {
-  access_key = "${var.access_key}"
-  secret_key = "${var.secret_key}"
-  region     = "cn-hongkong"
+  # access_key = "${var.access_key}"
+  # secret_key = "${var.secret_key}"
+  region = "cn-hongkong"
 }
 
 variable "polardb_mysql_name" {
@@ -29,24 +29,24 @@ resource "alicloud_vswitch" "default" {
 }
 
 ## Subscription (PrePaid)
-resource "alicloud_polardb_cluster" "cluster" {
-  db_type       = "MySQL"
-  db_version    = "8.0"
-  db_node_class = "polar.mysql.x4.medium"
-  pay_type      = "PrePaid"
-  period        = 1
-  vswitch_id    = alicloud_vswitch.default.id
-  description   = var.polardb_mysql_name
-}
-
 # resource "alicloud_polardb_cluster" "cluster" {
 #   db_type       = "MySQL"
 #   db_version    = "8.0"
 #   db_node_class = "polar.mysql.x4.medium"
-#   pay_type      = "PostPaid"
-#   vswitch_id    = alicloud_vswitch.default.id
-#   description   = var.polardb_mysql_name
+#   pay_type      = "PrePaid"
+#   period      = 1
+#   vswitch_id  = alicloud_vswitch.default.id
+#   description = var.polardb_mysql_name
 # }
+
+resource "alicloud_polardb_cluster" "cluster" {
+  db_type       = "MySQL"
+  db_version    = "8.0"
+  db_node_class = "polar.mysql.x4.medium"
+  pay_type      = "PostPaid"
+  vswitch_id    = alicloud_vswitch.default.id
+  description   = var.polardb_mysql_name
+}
 
 resource "alicloud_polardb_account" "account" {
   db_cluster_id       = alicloud_polardb_cluster.cluster.id
