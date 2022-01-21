@@ -1,3 +1,5 @@
+# Quick Path to Create RDS MySQL High Availability Instance with Read-Only Instance
+
 - You can access the tutorial artifact including deployment script (Terraform) from the github project:
 https://github.com/alibabacloud-howto/terraform-templates/tree/master/terraform-alicloud-db-samples/rds-mysql-ro
 
