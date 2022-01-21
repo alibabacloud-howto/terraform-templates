@@ -72,6 +72,25 @@ resource "alicloud_instance" "instance" {
   vswitch_id                 = alicloud_vswitch.default.id
   internet_max_bandwidth_out = 2
   internet_charge_type       = "PayByTraffic"
+
+  ## Provision to install SQL Server command line tool on ECS (Ubuntu)
+  provisioner "remote-exec" {
+    inline = [
+      "curl https://packages.microsoft.com/config/ubuntu/19.10/prod.list | sudo tee /etc/apt/sources.list.d/msprod.list",
+      "sudo apt update",
+      "sudo apt install mssql-tools -y",
+      "echo 'export PATH=\"$PATH:/opt/mssql-tools/bin\"' >> ~/.bash_profile",
+      "echo 'export PATH=\"$PATH:/opt/mssql-tools/bin\"' >> ~/.bashrc",
+      "source ~/.bashrc"
+    ]
+
+    connection {
+      type     = "ssh"
+      user     = "root"
+      password = self.password
+      host     = self.public_ip
+    }
+  }
 }
 
 ######## RDS SQL Server Primary
