@@ -96,13 +96,6 @@ resource "alicloud_db_readonly_instance" "ro" {
   vswitch_id            = alicloud_vswitch.default.id
 }
 
-resource "alicloud_db_read_write_splitting_connection" "default" {
-  instance_id       = alicloud_db_instance.primary.id
-  connection_prefix = "t-con-123112132"
-  distribution_type = "Standard"
-  depends_on        = [alicloud_db_readonly_instance.ro]
-}
-
 resource "alicloud_db_database" "default" {
   instance_id = alicloud_db_instance.primary.id
   name        = "test_database"
