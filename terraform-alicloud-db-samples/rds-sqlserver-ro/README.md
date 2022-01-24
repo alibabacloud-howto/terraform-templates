@@ -25,21 +25,18 @@ curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
 curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list | sudo tee /etc/apt/sources.list.d/msprod.list
 sudo apt-get update
 sudo apt install mssql-tools -y
-echo 'export PATH=\"$PATH:/opt/mssql-tools/bin\"' >> ~/.bash_profile
-echo 'export PATH=\"$PATH:/opt/mssql-tools/bin\"' >> ~/.bashrc
-source ~/.bashrc
 ```
 
 ### Using the command ``sqlcmd`` to connect to the SQL Server primary instance.
 
 ```
-sqlcmd -S <SQL_SERVER_PRIMARY_CONNECTION_STRING>,<SQL_SERVER_PRIMARY_CONNECTION_PORT> -U <USER_NAME> -P '<PASSWORD>' -d <DATABASE_NAME>
+/opt/mssql-tools/bin/sqlcmd -S <SQL_SERVER_PRIMARY_CONNECTION_STRING>,<SQL_SERVER_PRIMARY_CONNECTION_PORT> -U <USER_NAME> -P '<PASSWORD>' -d <DATABASE_NAME>
 ```
 
 Please replace the placeholders of the parameters, such as,
 
 ```
-sqlcmd -S rm-3ns02f8l01hszpg6w.sqlserver.rds.aliyuncs.com,1433 -U test_sqlserver -P 'N1cetest' -d test_database
+/opt/mssql-tools/bin/sqlcmd -S rm-3ns02f8l01hszpg6w.sqlserver.rds.aliyuncs.com,1433 -U test_sqlserver -P 'N1cetest' -d test_database
 ```
 
 Then execute the SQL commands as below to CREATE TABLE, INSERT and SELECT against the SQL Server primary connection to the primary instance.
@@ -69,13 +66,13 @@ go
 ### Using the command ``sqlcmd`` to connect to the SQL Server read-only instance.
 
 ```
-sqlcmd -S <SQL_SERVER_READONLY_CONNECTION_STRING>,<SQL_SERVER_READONLY_CONNECTION_PORT> -U <USER_NAME> -P '<PASSWORD>' -d <DATABASE_NAME>
+/opt/mssql-tools/bin/sqlcmd -S <SQL_SERVER_READONLY_CONNECTION_STRING>,<SQL_SERVER_READONLY_CONNECTION_PORT> -U <USER_NAME> -P '<PASSWORD>' -d <DATABASE_NAME>
 ```
 
 Please replace the placeholders of the parameters, such as,
 
 ```
-sqlcmd -S rr-3nsa4tx7i04xb1w00.sqlserver.rds.aliyuncs.com,1433 -U test_sqlserver -P 'N1cetest' -d test_database
+/opt/mssql-tools/bin/sqlcmd -S rr-3nsa4tx7i04xb1w00.sqlserver.rds.aliyuncs.com,1433 -U test_sqlserver -P 'N1cetest' -d test_database
 ```
 
 Then execute the SQL commands as below. We can see that INSERT is not allowed on the read-only connection string to the read-only instance.
