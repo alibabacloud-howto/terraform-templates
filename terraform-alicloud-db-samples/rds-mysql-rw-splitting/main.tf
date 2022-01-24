@@ -4,8 +4,8 @@ provider "alicloud" {
   region = "cn-hongkong"
 }
 
-variable "rds_sqlserver_name" {
-  default = "rds_sqlserver"
+variable "rds_mysql_name" {
+  default = "rds_mysql"
 }
 
 variable "creation" {
@@ -24,7 +24,7 @@ resource "alicloud_vpc" "default" {
 resource "alicloud_vswitch" "default" {
   vpc_id       = alicloud_vpc.default.id
   cidr_block   = "172.16.0.0/24"
-  zone_id      = data.alicloud_zones.default.zones[0].id
+  zone_id      = "cn-hongkong-c"
   vswitch_name = "vsw-test"
 }
 
@@ -60,47 +60,66 @@ resource "alicloud_security_group_rule" "allow_all_icmp" {
 ######## ECS
 resource "alicloud_instance" "instance" {
   security_groups            = alicloud_security_group.group.*.id
-  instance_type              = "ecs.c6.large" # 2core 4GB
+  instance_type              = "ecs.c5.large" # 2core 4GB
   system_disk_category       = "cloud_ssd"
-  system_disk_name           = "remote_exec_sqlserver"
+  system_disk_name           = "remote_exec_mysql"
   system_disk_size           = 40
-  system_disk_description    = "remote_exec_sqlserver_disk"
+  system_disk_description    = "remote_exec_mysql_disk"
   image_id                   = "ubuntu_20_04_x64_20G_alibase_20211027.vhd"
-  instance_name              = "remote_exec_sqlserver"
+  instance_name              = "remote_exec_mysql"
   password                   = "N1cetest" ## Please change accordingly
   instance_charge_type       = "PostPaid"
   vswitch_id                 = alicloud_vswitch.default.id
   internet_max_bandwidth_out = 2
   internet_charge_type       = "PayByTraffic"
+
+  ## Provision to install MySQL client on ECS (Ubuntu)
+  provisioner "remote-exec" {
+    inline = [
+      "apt update && apt -y install mysql-client"
+    ]
+
+    connection {
+      type     = "ssh"
+      user     = "root"
+      password = self.password
+      host     = self.public_ip
+    }
+  }
 }
 
-######## RDS SQL Server Primary
+######## RDS MySQL High Availability Primary
 resource "alicloud_db_instance" "primary" {
-  engine           = "SQLServer"
-  engine_version   = "2019_ent"
-  instance_type    = "mssql.x4.medium.e2"
-  instance_storage = "20"
-  vswitch_id       = alicloud_vswitch.default.id
-  instance_name    = var.rds_sqlserver_name
-  security_ips     = [alicloud_vswitch.default.cidr_block]
+  engine               = "MySQL"
+  engine_version       = "8.0"
+  instance_type        = "rds.mysql.s2.large"
+  instance_storage     = "20"
+  instance_charge_type = "Postpaid"
+  instance_name        = var.rds_mysql_name
+  vswitch_id           = alicloud_vswitch.default.id
+  security_ips         = [alicloud_vswitch.default.cidr_block]
 }
 
-######## RDS SQL Server Read-Only
-resource "alicloud_db_readonly_instance" "ro" {
+######## RDS MySQL Read-Only instance 1
+resource "alicloud_db_readonly_instance" "ro1" {
   master_db_instance_id = alicloud_db_instance.primary.id
   zone_id               = alicloud_db_instance.primary.zone_id
   engine_version        = alicloud_db_instance.primary.engine_version
-  instance_type         = "mssql.x4.medium.ro"
+  instance_type         = alicloud_db_instance.primary.instance_type
   instance_storage      = "20"
-  instance_name         = "${var.rds_sqlserver_name}ro"
+  instance_name         = "${var.rds_mysql_name}ro1"
   vswitch_id            = alicloud_vswitch.default.id
 }
 
-resource "alicloud_db_read_write_splitting_connection" "default" {
-  instance_id       = alicloud_db_instance.primary.id
-  connection_prefix = "t-con-123112132"
-  distribution_type = "Standard"
-  depends_on        = [alicloud_db_readonly_instance.ro]
+######## RDS MySQL Read-Only instance 2
+resource "alicloud_db_readonly_instance" "ro2" {
+  master_db_instance_id = alicloud_db_instance.primary.id
+  zone_id               = alicloud_db_instance.primary.zone_id
+  engine_version        = alicloud_db_instance.primary.engine_version
+  instance_type         = alicloud_db_instance.primary.instance_type
+  instance_storage      = "20"
+  instance_name         = "${var.rds_mysql_name}ro2"
+  vswitch_id            = alicloud_vswitch.default.id
 }
 
 resource "alicloud_db_database" "default" {
@@ -110,15 +129,21 @@ resource "alicloud_db_database" "default" {
 
 resource "alicloud_rds_account" "account" {
   db_instance_id   = alicloud_db_instance.primary.id
-  account_name     = "test_sqlserver"
+  account_name     = "test_mysql"
   account_password = "N1cetest"
 }
 
 resource "alicloud_db_account_privilege" "privilege" {
   instance_id  = alicloud_db_instance.primary.id
   account_name = alicloud_rds_account.account.name
-  privilege    = "DBOwner"
+  privilege    = "ReadWrite"
   db_names     = alicloud_db_database.default.*.name
+}
+
+resource "alicloud_db_read_write_splitting_connection" "default" {
+  instance_id       = alicloud_db_instance.primary.id
+  distribution_type = "Standard"
+  depends_on        = [alicloud_db_readonly_instance.ro1, alicloud_db_readonly_instance.ro2]
 }
 
 ######### Output: ECS public IP
@@ -126,22 +151,21 @@ output "ecs_public_ip" {
   value = alicloud_instance.instance.public_ip
 }
 
-######### Output: RDS SQL Server Primary Connection String
-output "rds_sqlserver_primary_url" {
+######### Output: RDS MySQL Primary Connection String
+output "rds_mysql_primary_url" {
   value = alicloud_db_instance.primary.connection_string
 }
 
-######### Output: RDS SQL Server Primary Connection Port
-output "rds_sqlserver_primary_port" {
+######### Output: RDS MySQL Primary Connection Port
+output "rds_mysql_primary_port" {
   value = alicloud_db_instance.primary.port
 }
 
-######### Output: RDS SQL Server Read-Only Connection String
-output "rds_sqlserver_readonly_url" {
-  value = alicloud_db_readonly_instance.ro.connection_string
+######### Output: Read Write Splitting Connection String
+output "rds_mysql_rw_splitting_url" {
+  value = alicloud_db_read_write_splitting_connection.default.connection_string
 }
 
-######### Output: RDS SQL Server Read-Only Connection Port
-output "rds_sqlserver_readonly_port" {
-  value = alicloud_db_readonly_instance.ro.port
+output "rds_mysql_rw_splitting_port" {
+  value = alicloud_db_read_write_splitting_connection.default.port
 }

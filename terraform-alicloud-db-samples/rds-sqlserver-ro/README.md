@@ -18,13 +18,15 @@ After the Terraform script execution finished, the ECS instance and RDS for SQL 
 
 ### Execute the commands to install SQL Server command line tool.
 
-```
-curl https://packages.microsoft.com/config/ubuntu/19.10/prod.list | sudo tee /etc/apt/sources.list.d/msprod.list
-sudo apt update
-sudo apt install mssql-tools -y
+Following the guide (https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-ubuntu?view=sql-server-ver15) to execute the following commands to install SQL Server command line tool.
 
-echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bash_profile
-echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
+```
+curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list | sudo tee /etc/apt/sources.list.d/msprod.list
+sudo apt-get update
+sudo apt install mssql-tools -y
+echo 'export PATH=\"$PATH:/opt/mssql-tools/bin\"' >> ~/.bash_profile
+echo 'export PATH=\"$PATH:/opt/mssql-tools/bin\"' >> ~/.bashrc
 source ~/.bashrc
 ```
 
